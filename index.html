@@ -95,19 +95,21 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
+   <script>
         // ==========================================
         // PASTE YOUR SUPABASE KEYS BELOW!
         // ==========================================
         const SUPABASE_URL = 'https://zbsfrntkouchtvcvzdye.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpic2ZybnRrb3VjaHR2Y3Z6ZHllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxOTk0MDQsImV4cCI6MjA5MDc3NTQwNH0.WOa3xgkp1IHMsSKugsheDhuGrQqGrmoEVLUbDptY2Qw';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // FIX: Changed variable name to supabaseClient to prevent collision
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let isLoginMode = true;
 
         // Auto-redirect if already logged in
         async function checkActiveSession() {
-            const { data } = await supabase.auth.getSession();
+            const { data } = await supabaseClient.auth.getSession();
             if (data.session) {
                 window.location.href = 'dashboard.html';
             }
@@ -156,7 +158,7 @@
             try {
                 if (isLoginMode) {
                     // LOGIN
-                    const { data, error } = await supabase.auth.signInWithPassword({
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
                         email: email,
                         password: password,
                     });
@@ -167,7 +169,7 @@
 
                 } else {
                     // SIGN UP
-                    const { data, error } = await supabase.auth.signUp({
+                    const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
                         options: {
