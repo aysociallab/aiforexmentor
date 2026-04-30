@@ -3,29 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Forex Mentor | Institutional Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>AI Forex Mentor | Institutional Trading Edge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #0f172a; --panel-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #0ea5e9; --accent-hover: #0284c7; --border: #334155; --danger: #ef4444; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        :root { --bg-color: #0f172a; --panel-bg: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #0ea5e9; --accent-hover: #0284c7; --border: rgba(51, 65, 85, 0.5); --success: #10b981; --warning: #f59e0b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; line-height: 1.6; }
         
-        .auth-container { display: flex; background: var(--panel-bg); width: 900px; max-width: 95%; height: 550px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.4); overflow: hidden; }
-        
-        .branding-panel { flex: 1; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 3rem; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--border); position: relative; }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.8rem; margin-bottom: 1.5rem; }
+        /* BACKGROUND VIDEO */
+        .video-bg { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; object-fit: cover; opacity: 0.25; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(15,23,42,0.95) 100%); z-index: -1; }
+
+        /* NAVBAR */
+        header { padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 100; backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+        .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; }
         .logo span { color: var(--accent); }
-        .tagline { font-size: 1rem; color: var(--text-muted); line-height: 1.6; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+        .btn-primary { background: var(--accent); color: white; padding: 0.6rem 1.5rem; border-radius: 6px; font-weight: 600; text-decoration: none; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2); }
+
+        /* HERO SECTION */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 5%; padding-top: 80px; }
+        .hero h1 { font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -1px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; max-width: 900px;}
+        .hero p { font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin-bottom: 2.5rem; }
         
-        .form-panel { flex: 1; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
-        .form-header { margin-bottom: 2rem; }
-        .form-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .form-subtitle { color: var(--text-muted); font-size: 0.875rem; }
+        /* LIVE COUNTERS */
+        .stats-container { display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap; justify-content: center; background: var(--panel-bg); border: 1px solid var(--border); backdrop-filter: blur(12px); padding: 2rem 4rem; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);}
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; color: var(--accent); margin-bottom: 0.2rem; }
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* SECTIONS */
+        section { padding: 6rem 5%; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .section-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 4rem; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* VALUE PROP GRID */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .feature-card { background: var(--panel-bg); border: 1px solid var(--border); padding: 2.5rem; border-radius: 12px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .feature-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+        .feature-text { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* PRICING */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; justify-content: center; }
+        .price-card { background: var(--panel-bg); border: 1px solid var(--border); padding: 3rem; border-radius: 16px; backdrop-filter: blur(10px); position: relative; }
+        .price-card.pro { border-color: var(--accent); box-shadow: 0 0 30px rgba(14, 165, 233, 0.1); }
+        .pro-badge { position: absolute; top: -12px; right: 2rem; background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .price-tier { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .price-amount { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; }
+        .price-amount span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+        .price-features { list-style: none; margin-bottom: 2.5rem; }
+        .price-features li { margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
+        .price-features li::before { content: '✓'; color: var(--success); font-weight: bold; }
+        
+        /* TESTIMONIALS */
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .testimonial-card { background: var(--panel-bg); border: 1px solid var(--border); padding: 2rem; border-radius: 12px; backdrop-filter: blur(10px); font-style: italic; }
+        .testimonial-author { display: flex; align-items: center; gap: 15px; margin-top: 1.5rem; font-style: normal; }
+        .author-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--accent); }
+        .author-info div:first-child { font-weight: 700; }
+        .author-info div:last-child { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* AUTH MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 999; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .auth-box { background: #1e293b; width: 450px; max-width: 90%; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 25px 50px rgba(0,0,0,0.5); padding: 2.5rem; position: relative; transform: translateY(20px); transition: 0.3s; }
+        .modal-overlay.active .auth-box { transform: translateY(0); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; background: none; border: none; }
+        .close-modal:hover { color: white; }
         
         .form-group { margin-bottom: 1.25rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
         .form-control { width: 100%; padding: 0.85rem; border-radius: 6px; background-color: var(--bg-color); border: 1px solid var(--border); color: var(--text-main); font-size: 1rem; transition: 0.3s; }
-        .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .form-control:focus { outline: none; border-color: var(--accent); }
         
         .btn-submit { width: 100%; background-color: var(--accent); color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 1rem; }
         .btn-submit:hover { background-color: var(--accent-hover); }
@@ -34,43 +88,185 @@
         .toggle-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); }
         .toggle-text a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
         .toggle-text a:hover { text-decoration: underline; }
-
         .error-message { color: var(--danger); font-size: 0.85rem; margin-top: 1rem; text-align: center; display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        #signup-fields { display: none; }
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; margin-top: 4rem; }
 
         @media (max-width: 768px) {
-            .auth-container { flex-direction: column; height: auto; max-height: 90vh; overflow-y: auto; }
-            .branding-panel { display: none; } /* Hide branding on mobile to save space */
-            .form-panel { padding: 2rem; }
+            .hero h1 { font-size: 3rem; }
+            .stats-container { gap: 1.5rem; padding: 1.5rem; flex-direction: column; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <div class="branding-panel">
-            <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                AI Forex<span>Mentor</span>
-            </div>
-            <div class="tagline">
-                Institutional-grade algorithmic analysis. Prop firm risk management. Real-time market monitoring. 
-                <br><br>
-                Secure your edge in the global markets.
-            </div>
+    <video autoplay loop muted playsinline class="video-bg">
+        <source src="trading-bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+
+    <header>
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            AI Forex<span>Mentor</span>
         </div>
+        <nav class="nav-links">
+            <a href="#features">The Edge</a>
+            <a href="#pricing">Pricing</a>
+            <button class="btn-primary" onclick="openModal('login')">Client Login</button>
+        </nav>
+    </header>
 
-        <div class="form-panel">
-            <div class="form-header">
-                <h2 class="form-title" id="form-title">Terminal Login</h2>
-                <p class="form-subtitle" id="form-subtitle">Enter your credentials to access the vault.</p>
+    <main>
+        <section class="hero">
+            <h1>Trade Like an Institution.<br>Powered by AI.</h1>
+            <p>Stop gambling with retail strategies. Leverage autonomous GPT-5.5 Deep Research to calculate exact R:R probabilities, enforce prop firm risk limits, and journal your edge.</p>
+            <div style="display:flex; gap: 15px;">
+                <button class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;" onclick="openModal('signup')">Request Terminal Access</button>
             </div>
 
-            <div id="signup-fields">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number">1.2M+</div>
+                    <div class="stat-label">Market Matrices Analyzed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">74.8%</div>
+                    <div class="stat-label">Avg. Setup Strike Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$4.5M+</div>
+                    <div class="stat-label">Funded Capital Protected</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <h2 class="section-title">Why 90% of Retail Traders Fail</h2>
+            <p class="section-subtitle">Retail traders lose because they trade on emotion, use lagging indicators, and break their own risk rules. We engineered the antidote.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">GPT-5.5 Quant Engine</h3>
+                    <p class="feature-text">Our backend connects directly to global market feeds. It scans structure, momentum, and volatility to deliver aggressive, high-probability price action sniper entries.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Prop Firm Copilot</h3>
+                    <p class="feature-text">Passing an FTMO challenge requires absolute discipline. Activate Copilot mode to mathematically block yourself from taking any trade that violates your daily drawdown limit.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Real-Time Telegram Sync</h3>
+                    <p class="feature-text">Never stare at a chart all day again. Our secure cloud vault syncs directly with Telegram to push instant ping alerts to your phone the millisecond a target is hit.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Automated Journaling</h3>
+                    <p class="feature-text">Forget messy spreadsheets. Click a generated setup and the platform instantly logs your entry, split TPs, R-Multiples, and tracks your live floating equity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍🏫</div>
+                    <h3 class="feature-title">AI Trade Autopsy</h3>
+                    <p class="feature-text">Lost a trade? Hit the Autopsy button. The AI acts as your personal mentor, analyzing exactly what macro shift or structural failure invalidated your setup.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Bank-Grade Vault</h3>
+                    <p class="feature-text">Your edge is your intellectual property. All trades are encrypted behind Supabase Row Level Security (RLS) cloud architecture. Nobody sees your data but you.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" style="background: rgba(15, 23, 42, 0.5); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding-top: 4rem; padding-bottom: 4rem;">
+            <h2 class="section-title" style="font-size: 2rem;">Built for the 10% Who Survive.</h2>
+            <div class="testimonial-grid" style="margin-top: 3rem;">
+                <div class="testimonial-card">
+                    "The Prop Firm Copilot physically stopped me from revenge trading last Tuesday. It literally saved my $100k funded account from being blown. The software pays for itself."
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info"><div>Marcus T.</div><div>Funded Trader (FTMO)</div></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    "I used to spend 3 hours a day charting. Now I just ping the Deep Research tool for the GBPJPY bias, take the 1:3 R:R setup, and let the Telegram bot tell me when to collect."
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div class="author-info"><div>Sarah K.</div><div>Institutional Quant</div></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    "The AI Autopsy is brutal but necessary. Having an emotionless machine tell you exactly why your setup was structurally flawed fixed my psychology faster than any trading course."
+                    <div class="testimonial-author">
+                        <div class="author-avatar">J</div>
+                        <div class="author-info"><div>James R.</div><div>Independent Trader</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing">
+            <h2 class="section-title">Institutional Tools. Retail Pricing.</h2>
+            <p class="section-subtitle">Choose the edge that fits your trading volume.</p>
+
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="price-tier">Basic Vault</div>
+                    <div class="price-amount">Free</div>
+                    <ul class="price-features">
+                        <li>Manual Trade Journaling</li>
+                        <li>Live Floating P/L Tracking</li>
+                        <li>Basic Math & Risk Enforcement</li>
+                        <li>CSV Data Export</li>
+                        <li style="opacity: 0.3; filter: grayscale(1);">No AI Deep Research</li>
+                    </ul>
+                    <button class="btn-primary" style="width: 100%; background: transparent; border: 1px solid var(--accent); color: var(--text-main);" onclick="openModal('signup')">Create Free Vault</button>
+                </div>
+                <div class="price-card pro">
+                    <div class="pro-badge">Most Popular</div>
+                    <div class="price-tier">Pro Institutional</div>
+                    <div class="price-amount">$49<span>/mo</span></div>
+                    <ul class="price-features">
+                        <li>Everything in Basic</li>
+                        <li>Unlimited GPT-5.5 Deep Research</li>
+                        <li>AI Trade Autopsy Coach</li>
+                        <li>Live Telegram Ping Alerts</li>
+                        <li>Prop Firm Copilot Guardrails</li>
+                    </ul>
+                    <button class="btn-primary" style="width: 100%;" onclick="openModal('signup')">Unlock Pro Edge</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2026 AI Forex Mentor. High-Risk Warning: Foreign exchange trading carries a high level of risk that may not be suitable for all investors. Leverage creates additional risk and loss exposure. Past performance is not indicative of future results.
+    </footer>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="auth-box">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <h2 class="form-title" id="form-title">Terminal Login</h2>
+            <p class="form-subtitle" style="color:var(--text-muted); margin-bottom: 2rem;" id="form-subtitle">Enter your credentials to access the vault.</p>
+
+            <div id="signup-fields" style="display: none;">
                 <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" id="auth-name" class="form-control" placeholder="e.g. John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Local Time Zone (For Accurate Journaling)</label>
+                    <select id="auth-timezone" class="form-control">
+                        <option value="UTC">UTC (Universal Coordinated Time)</option>
+                        <option value="Asia/Kolkata" selected>IST (India Standard Time)</option>
+                        <option value="America/New_York">EST/EDT (New York)</option>
+                        <option value="Europe/London">GMT/BST (London)</option>
+                        <option value="Asia/Dubai">GST (Dubai)</option>
+                        <option value="Asia/Tokyo">JST (Tokyo)</option>
+                        <option value="Australia/Sydney">AEST (Sydney)</option>
+                    </select>
                 </div>
             </div>
 
@@ -95,34 +291,41 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-   <script>
+    <script>
         // ==========================================
         // PASTE YOUR SUPABASE KEYS BELOW!
         // ==========================================
         const SUPABASE_URL = 'https://zbsfrntkouchtvcvzdye.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpic2ZybnRrb3VjaHR2Y3Z6ZHllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxOTk0MDQsImV4cCI6MjA5MDc3NTQwNH0.WOa3xgkp1IHMsSKugsheDhuGrQqGrmoEVLUbDptY2Qw';
-        
-        // FIX: Changed variable name to supabaseClient to prevent collision
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let isLoginMode = true;
+        const modal = document.getElementById('auth-modal');
 
-        // Auto-redirect if already logged in
         async function checkActiveSession() {
             const { data } = await supabaseClient.auth.getSession();
-            if (data.session) {
-                window.location.href = 'dashboard.html';
-            }
+            if (data.session) window.location.href = 'dashboard.html';
         }
         checkActiveSession();
 
+        function openModal(mode) {
+            modal.classList.add('active');
+            isLoginMode = (mode === 'login');
+            updateModalUI();
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.getElementById('error-box').style.display = 'none';
+        }
+
         function toggleMode() {
             isLoginMode = !isLoginMode;
-            document.getElementById('error-box').style.display = 'none';
-            document.getElementById('auth-email').value = '';
-            document.getElementById('auth-password').value = '';
-            document.getElementById('auth-name').value = '';
+            updateModalUI();
+        }
 
+        function updateModalUI() {
+            document.getElementById('error-box').style.display = 'none';
             if (isLoginMode) {
                 document.getElementById('form-title').innerText = "Terminal Login";
                 document.getElementById('form-subtitle').innerText = "Enter your credentials to access the vault.";
@@ -142,6 +345,7 @@
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const name = document.getElementById('auth-name').value;
+            const tz = document.getElementById('auth-timezone').value;
             const btn = document.getElementById('auth-btn');
             const errorBox = document.getElementById('error-box');
 
@@ -157,29 +361,20 @@
 
             try {
                 if (isLoginMode) {
-                    // LOGIN
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({
-                        email: email,
-                        password: password,
-                    });
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
                     if (error) throw error;
-                    
-                    // Success! Go to dashboard
                     window.location.href = 'dashboard.html';
-
                 } else {
-                    // SIGN UP
+                    // Send name AND timezone to Supabase Database
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
-                        options: {
-                            data: { full_name: name }
-                        }
+                        options: { data: { full_name: name, timezone: tz } }
                     });
                     if (error) throw error;
 
                     alert("Vault created successfully! You can now log in.");
-                    toggleMode(); // Switch back to login view
+                    toggleMode(); 
                 }
             } catch (err) {
                 errorBox.innerText = err.message || "Authentication failed.";
@@ -187,6 +382,11 @@
                 btn.disabled = false;
                 btn.innerText = isLoginMode ? "Initialize Connection" : "Create Vault";
             }
+        });
+
+        // Close modal if clicked outside the box
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
         });
     </script>
 </body>
