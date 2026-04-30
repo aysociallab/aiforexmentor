@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from supabase import create_client, Client
@@ -11,17 +12,21 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 app.include_router(signals_router, prefix="/api/v2")
 
 # ==========================================
-# 1. SAAS CONFIGURATION
+# 1. SAAS CONFIGURATION (SECURE CLOUD)
 # ==========================================
-# ONLY the Bot Token goes here. The Chat ID is dynamic per user!
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN") 
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY") # Use Service Role key for backend bypass
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://placeholder.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "placeholder")
+
+try:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+except Exception as e:
+    print(f"⚠️ Supabase Init Error (Check Env Vars): {e}")
+    supabase = None
 
 def send_telegram_alert(message: str, chat_id: str):
-    if not TELEGRAM_BOT_TOKEN or not chat_id or "YOUR_" in TELEGRAM_BOT_TOKEN:
+    if not TELEGRAM_BOT_TOKEN or not chat_id:
         return
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
@@ -38,6 +43,10 @@ async def market_monitoring_heartbeat():
     
     while True:
         try:
+            if not supabase:
+                await asyncio.sleep(10)
+                continue
+
             res = supabase.table("trades").select("*").neq("status", "closed_profit").neq("status", "closed_loss").execute()
             active_trades = res.data
 
@@ -47,7 +56,6 @@ async def market_monitoring_heartbeat():
                 asset = trade['asset']
                 setup_type = trade['setup_type'].lower()
                 
-                # Fetch this specific user's Telegram ID
                 user_profile = supabase.table("profiles").select("telegram_chat_id").eq("id", user_id).execute()
                 user_chat_id = user_profile.data[0].get('telegram_chat_id') if user_profile.data else None
                 
@@ -63,7 +71,6 @@ async def market_monitoring_heartbeat():
                 if is_market:
                     is_triggered = True
                     
-                # --- PENDING ORDER ACTIVATION ---
                 if not is_triggered:
                     if setup_type == "buy_stop" and current_price >= trade['entry_price']: is_triggered = True
                     elif setup_type == "buy_limit" and current_price <= trade['entry_price']: is_triggered = True
@@ -74,7 +81,6 @@ async def market_monitoring_heartbeat():
                         update_data['is_triggered'] = True
                         if user_chat_id: send_telegram_alert(f"🚀 <b>ORDER TRIGGERED!</b>\n\n<b>Asset:</b> {asset}\n<b>Setup:</b> {setup_type.upper().replace('_', ' ')}\n<b>Entry Hit At:</b> {current_price:.5f}", user_chat_id)
 
-                # --- EXECUTION LOGIC (TP/SL) ---
                 if is_triggered:
                     if is_buy:
                         if current_price >= trade['take_profit_1'] and trade.get('status_tp1') == 'pending':
@@ -101,7 +107,7 @@ async def market_monitoring_heartbeat():
                             if trade.get('status_tp3') == 'pending': update_data['status_tp3'] = 'sl_hit'
                             if user_chat_id: send_telegram_alert(f"🛑 <b>STOP LOSS HIT!</b>\n\n<b>Asset:</b> {asset}\n<b>Exited At:</b> {trade['stop_loss']:.5f}", user_chat_id)
 
-                    else: # SELL LOGIC
+                    else: 
                         if current_price <= trade['take_profit_1'] and trade.get('status_tp1') == 'pending':
                             update_data['status_tp1'] = 'hit'
                             update_data['status'] = 'open'
@@ -140,4 +146,4 @@ async def startup_event():
 
 @app.get("/")
 def read_root():
-    return {"status": "AI Forex Mentor API is running"}
+    return {"status": "AI Forex Mentor API is running securely."}

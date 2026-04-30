@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from openai import AsyncOpenAI
@@ -12,10 +13,10 @@ from typing import Optional
 router = APIRouter()
 
 # ==========================================
-# 1. OPENAI SETUP
-# PASTE YOUR REAL OPENAI KEY HERE!
+# 1. OPENAI SETUP (SECURE CLOUD)
 # ==========================================
-client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+openai_key = os.environ.get("OPENAI_API_KEY", "placeholder")
+client = AsyncOpenAI(api_key=openai_key)
 
 class AnalyzeRequest(BaseModel):
     asset: str
@@ -63,7 +64,6 @@ async def get_live_prices():
 
 def get_live_price(asset: str):
     clean_asset = asset.replace('/', '').replace('-', '')
-    
     if clean_asset in last_prices:
         return last_prices[clean_asset]
         
@@ -75,11 +75,10 @@ def get_live_price(asset: str):
             todays_data = ticker.history(period='5d')
         return float(todays_data['Close'].iloc[-1])
     except Exception as e:
-        print(f"⚠️ Telegram helper could not fetch price for {asset}: {e}")
         return None
 
 # ==========================================
-# 3. THE SIGHT UPGRADE V2 (ATR & MACD ADDED)
+# 3. THE SIGHT UPGRADE V2
 # ==========================================
 def get_market_context(asset: str, timeframe: str):
     clean_asset = asset.replace('/', '').replace('-', '')
@@ -106,7 +105,6 @@ def get_market_context(asset: str, timeframe: str):
         df.ta.ema(length=50, append=True)
         df.ta.ema(length=200, append=True)
         df.ta.rsi(length=14, append=True)
-        
         df.ta.atr(length=14, append=True)
         df.ta.macd(fast=12, slow=26, signal=9, append=True)
         
@@ -122,8 +120,7 @@ def get_market_context(asset: str, timeframe: str):
             "atr_14": float(latest['ATRr_14']) if not pd.isna(latest['ATRr_14']) else 0.0010,
             "macd_hist": float(latest['MACDh_12_26_9']) if not pd.isna(latest['MACDh_12_26_9']) else 0.0
         }
-    except Exception as e:
-        print(f"Error fetching context: {e}")
+    except Exception:
         return None
 
 # ==========================================
@@ -132,40 +129,20 @@ def get_market_context(asset: str, timeframe: str):
 @router.post("/analyze")
 async def analyze_market(request: AnalyzeRequest):
     context = get_market_context(request.asset, request.timeframe)
-    
     if context:
-        price_context = f"""
-        CRITICAL MARKET DATA FOR {request.asset} ({request.timeframe}):
-        - Current Live Price: {context['price']:.5f}
-        - MACRO D1 TREND: {context['macro_trend_d1']}
-        - 20 EMA: {context['ema_20']}
-        - 50 EMA: {context['ema_50']}
-        - 200 EMA: {context['ema_200']}
-        - 14-Period RSI: {context['rsi_14']}
-        - 14-Period ATR (Volatility): {context['atr_14']}
-        """
+        price_context = f"Live Price: {context['price']:.5f}. D1 Trend: {context['macro_trend_d1']}. 20 EMA: {context['ema_20']}. 50 EMA: {context['ema_50']}. 200 EMA: {context['ema_200']}. RSI: {context['rsi_14']}. ATR: {context['atr_14']}"
         live_price = context['price']
         atr_value = context['atr_14']
     else:
-        price_context = f"Analyze the recent market structure of {request.asset}."
+        price_context = f"Analyze market structure of {request.asset}."
         live_price = 1.0
         atr_value = 0.0020
 
-    # THE NEW AGGRESSIVE PROMPT
     prompt = f"""
-    You are an elite Institutional Forex Quantitative Analyst. Target Asset: {request.asset}. Timeframe Bias: {request.timeframe}. Required Minimum Risk/Reward Ratio: 1:{request.min_rr}. 
-    
+    You are an elite Quant. Asset: {request.asset}. Bias: {request.timeframe}. Min R/R: 1:{request.min_rr}. 
     {price_context}
-
-    YOUR AGGRESSIVE PRICE ACTION METHODOLOGY:
-    1. TREND ALIGNMENT: Check the D1 Macro Trend. You may take counter-trend setups if intraday momentum is explosive, but trend-aligned setups score higher.
-    2. TIGHT STOP LOSS (CRITICAL): Do not use overly wide stops. Place the Stop Loss exactly beyond recent structural swing highs/lows, using a tight 0.5 to 1.0 * ATR ({atr_value}) buffer to maximize R:R. 
-    3. PURE PRICE ACTION & MOMENTUM: Do NOT wait for lagging indicators to cross. Focus on high-probability price action: liquidity sweeps, momentum breakouts, and immediate EMA bounces. If price action is strong, take the sniper entry.
-    4. STRICT RISK MATH: TP distance MUST be mathematically >= {request.min_rr}x the SL distance.
-    5. CONFIDENCE SCORING: Reward setups that provide a tight, high R:R entry with immediate momentum. 
-
-    Evaluate the 'strength_score' (1-100). Explicitly calculate the exact 'risk_reward_ratio' (e.g. "1:3.5").
-    
+    RULES: 1. Align with D1 Trend. 2. SL MUST be 0.5 to 1.0 * ATR ({atr_value}) away from entry. 3. Pure aggressive price action. No lagging indicator wait times. 4. Strict math: TP distance >= {request.min_rr}x SL distance.
+    Calculate strength_score (1-100) and risk_reward_ratio ("1:X").
     Respond ONLY in valid JSON:
     {{
         "market_buy": {{ "strength_score": 85, "risk_reward_ratio": "1:3.5", "entry": {live_price}, "stop_loss": 0.0, "take_profit_1": 0.0, "take_profit_2": 0.0, "take_profit_3": 0.0, "deep_analysis": "..." }},
@@ -176,40 +153,17 @@ async def analyze_market(request: AnalyzeRequest):
         "sell_limit": {{ "strength_score": 0, "risk_reward_ratio": "1:0", "entry": 0.0, "stop_loss": 0.0, "take_profit_1": 0.0, "take_profit_2": 0.0, "take_profit_3": 0.0, "deep_analysis": "..." }}
     }}
     """
-
-    max_retries = 2
-    for attempt in range(max_retries):
-        try:
-            response = await client.chat.completions.create(
-                model="gpt-5.5",
-                messages=[
-                    {"role": "system", "content": "You are a JSON-only API. You strictly enforce math constraints, and focus purely on aggressive price action entries."},
-                    {"role": "user", "content": prompt}
-                ],
-                response_format={ "type": "json_object" }
-            )
-            content = response.choices[0].message.content
-            if not content:
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(1)
-                    continue
-                raise Exception("OpenAI API returned an empty response.")
-            return json.loads(content)
-        except Exception as e:
-            if attempt == max_retries - 1: raise HTTPException(status_code=500, detail=str(e))
+    try:
+        response = await client.chat.completions.create(model="gpt-5.5", messages=[{"role": "system", "content": "You are a JSON API. Focus purely on aggressive price action."}, {"role": "user", "content": prompt}], response_format={ "type": "json_object" })
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/autopsy")
 async def trade_autopsy(request: AutopsyRequest):
-    if request.notes and len(request.notes) > 25:
-        prompt = f"Act as an accountable, supportive institutional trading AI. The user took a {request.setup_type} trade on {request.asset} at {request.entry} based on your analysis: '{request.notes}'. The trade resulted in {request.status}. Acknowledge they followed the system correctly. In a clear, encouraging 3-sentence breakdown, explain what macro factors or sudden market shifts likely invalidated this specific setup, and reassure them that probability-based trading includes normal losses."
-    else:
-        prompt = f"Act as a supportive, expert institutional trading mentor. I took a manual {request.setup_type} trade on {request.asset} at {request.entry}. The trade resulted in {request.status}. Give me a clear, constructive, and encouraging 3-sentence breakdown in simple words of what likely happened in the market and what I can learn to improve my edge next time, focusing on risk management. Do not be rude."
-        
+    prompt = f"Act as an accountable, supportive trading AI. I took a {request.setup_type} trade on {request.asset} at {request.entry}. Result: {request.status}. Give a 3-sentence encouraging breakdown of what market factors invalidated this setup, focusing on risk management. Do not be rude."
     try:
-        response = await client.chat.completions.create(
-            model="gpt-5.5", 
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = await client.chat.completions.create(model="gpt-5.5", messages=[{"role": "user", "content": prompt}])
         return {"analysis": response.choices[0].message.content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
