@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Forex Mentor | Institutional Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #0f172a; --panel-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #0ea5e9; --accent-hover: #0284c7; --border: #334155; --danger: #ef4444; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        .auth-container { display: flex; background: var(--panel-bg); width: 900px; max-width: 95%; height: 550px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.4); overflow: hidden; }
+        
+        .branding-panel { flex: 1; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 3rem; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--border); position: relative; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .logo span { color: var(--accent); }
+        .tagline { font-size: 1rem; color: var(--text-muted); line-height: 1.6; }
+        
+        .form-panel { flex: 1; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+        .form-header { margin-bottom: 2rem; }
+        .form-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .form-subtitle { color: var(--text-muted); font-size: 0.875rem; }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .form-control { width: 100%; padding: 0.85rem; border-radius: 6px; background-color: var(--bg-color); border: 1px solid var(--border); color: var(--text-main); font-size: 1rem; transition: 0.3s; }
+        .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        
+        .btn-submit { width: 100%; background-color: var(--accent); color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 1rem; }
+        .btn-submit:hover { background-color: var(--accent-hover); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .toggle-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); }
+        .toggle-text a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
+        .toggle-text a:hover { text-decoration: underline; }
+
+        .error-message { color: var(--danger); font-size: 0.85rem; margin-top: 1rem; text-align: center; display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        #signup-fields { display: none; }
+
+        @media (max-width: 768px) {
+            .auth-container { flex-direction: column; height: auto; max-height: 90vh; overflow-y: auto; }
+            .branding-panel { display: none; } /* Hide branding on mobile to save space */
+            .form-panel { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="branding-panel">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                AI Forex<span>Mentor</span>
+            </div>
+            <div class="tagline">
+                Institutional-grade algorithmic analysis. Prop firm risk management. Real-time market monitoring. 
+                <br><br>
+                Secure your edge in the global markets.
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="form-header">
+                <h2 class="form-title" id="form-title">Terminal Login</h2>
+                <p class="form-subtitle" id="form-subtitle">Enter your credentials to access the vault.</p>
+            </div>
+
+            <div id="signup-fields">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="auth-name" class="form-control" placeholder="e.g. John Doe">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="auth-email" class="form-control" placeholder="trader@institution.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Master Password</label>
+                <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <div class="error-message" id="error-box">Authentication Failed</div>
+
+            <button class="btn-submit" id="auth-btn">Initialize Connection</button>
+
+            <div class="toggle-text" id="toggle-container">
+                No account? <a onclick="toggleMode()">Request Terminal Access</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ==========================================
+        // PASTE YOUR SUPABASE KEYS BELOW!
+        // ==========================================
+        const SUPABASE_URL = 'https://zbsfrntkouchtvcvzdye.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpic2ZybnRrb3VjaHR2Y3Z6ZHllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxOTk0MDQsImV4cCI6MjA5MDc3NTQwNH0.WOa3xgkp1IHMsSKugsheDhuGrQqGrmoEVLUbDptY2Qw';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let isLoginMode = true;
+
+        // Auto-redirect if already logged in
+        async function checkActiveSession() {
+            const { data } = await supabase.auth.getSession();
+            if (data.session) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+        checkActiveSession();
+
+        function toggleMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('error-box').style.display = 'none';
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-name').value = '';
+
+            if (isLoginMode) {
+                document.getElementById('form-title').innerText = "Terminal Login";
+                document.getElementById('form-subtitle').innerText = "Enter your credentials to access the vault.";
+                document.getElementById('signup-fields').style.display = 'none';
+                document.getElementById('auth-btn').innerText = "Initialize Connection";
+                document.getElementById('toggle-container').innerHTML = `No account? <a onclick="toggleMode()">Request Terminal Access</a>`;
+            } else {
+                document.getElementById('form-title').innerText = "Create Account";
+                document.getElementById('form-subtitle').innerText = "Setup your institutional parameters.";
+                document.getElementById('signup-fields').style.display = 'block';
+                document.getElementById('auth-btn').innerText = "Create Vault";
+                document.getElementById('toggle-container').innerHTML = `Already have an account? <a onclick="toggleMode()">Log In</a>`;
+            }
+        }
+
+        document.getElementById('auth-btn').addEventListener('click', async () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const name = document.getElementById('auth-name').value;
+            const btn = document.getElementById('auth-btn');
+            const errorBox = document.getElementById('error-box');
+
+            if (!email || !password || (!isLoginMode && !name)) {
+                errorBox.innerText = "Please fill out all required fields.";
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Authenticating...";
+            errorBox.style.display = 'none';
+
+            try {
+                if (isLoginMode) {
+                    // LOGIN
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password,
+                    });
+                    if (error) throw error;
+                    
+                    // Success! Go to dashboard
+                    window.location.href = 'dashboard.html';
+
+                } else {
+                    // SIGN UP
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            data: { full_name: name }
+                        }
+                    });
+                    if (error) throw error;
+
+                    alert("Vault created successfully! You can now log in.");
+                    toggleMode(); // Switch back to login view
+                }
+            } catch (err) {
+                errorBox.innerText = err.message || "Authentication failed.";
+                errorBox.style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = isLoginMode ? "Initialize Connection" : "Create Vault";
+            }
+        });
+    </script>
+</body>
+</html>
