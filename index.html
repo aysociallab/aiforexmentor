@@ -6,13 +6,13 @@
     <title>AI Forex Mentor | Institutional Trading Edge</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #0f172a; --panel-bg: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #0ea5e9; --accent-hover: #0284c7; --border: rgba(51, 65, 85, 0.5); --success: #10b981; --warning: #f59e0b; }
+        :root { --bg-color: #0f172a; --panel-bg: rgba(30, 41, 59, 0.75); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #0ea5e9; --accent-hover: #0284c7; --border: rgba(51, 65, 85, 0.5); --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; line-height: 1.6; }
         
-        /* BACKGROUND VIDEO */
-        .video-bg { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; object-fit: cover; opacity: 0.25; }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(15,23,42,0.95) 100%); z-index: -1; }
+        /* BACKGROUND VIDEO - OPACITY ADJUSTED FOR VISIBILITY */
+        .video-bg { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -2; object-fit: cover; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.85) 100%); z-index: -1; }
 
         /* NAVBAR */
         header { padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 100; backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
@@ -77,9 +77,11 @@
         .close-modal:hover { color: white; }
         
         .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .form-group label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .form-group label a { color: var(--accent); text-decoration: none; cursor: pointer; font-weight: 400; }
+        .form-group label a:hover { text-decoration: underline; }
         .form-control { width: 100%; padding: 0.85rem; border-radius: 6px; background-color: var(--bg-color); border: 1px solid var(--border); color: var(--text-main); font-size: 1rem; transition: 0.3s; }
-        .form-control:focus { outline: none; border-color: var(--accent); }
+        .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
         
         .btn-submit { width: 100%; background-color: var(--accent); color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 1rem; }
         .btn-submit:hover { background-color: var(--accent-hover); }
@@ -88,9 +90,11 @@
         .toggle-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); }
         .toggle-text a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
         .toggle-text a:hover { text-decoration: underline; }
+        
         .error-message { color: var(--danger); font-size: 0.85rem; margin-top: 1rem; text-align: center; display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .success-message { color: var(--success); font-size: 0.85rem; margin-top: 1rem; text-align: center; display: none; background: rgba(16, 185, 129, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; margin-top: 4rem; }
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; margin-top: 4rem; background: var(--bg-color);}
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 3rem; }
@@ -121,7 +125,7 @@
     <main>
         <section class="hero">
             <h1>Trade Like an Institution.<br>Powered by AI.</h1>
-            <p>Stop gambling with retail strategies. Leverage autonomous GPT-5.5 Deep Research to calculate exact R:R probabilities, enforce prop firm risk limits, and journal your edge.</p>
+            <p>Stop gambling with retail strategies. Leverage the proprietary DeepMatrix Quant Engine to calculate exact R:R probabilities, enforce prop firm risk limits, and journal your edge automatically.</p>
             <div style="display:flex; gap: 15px;">
                 <button class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;" onclick="openModal('signup')">Request Terminal Access</button>
             </div>
@@ -149,13 +153,13 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🧠</div>
-                    <h3 class="feature-title">GPT-5.5 Quant Engine</h3>
-                    <p class="feature-text">Our backend connects directly to global market feeds. It scans structure, momentum, and volatility to deliver aggressive, high-probability price action sniper entries.</p>
+                    <h3 class="feature-title">DeepMatrix Quant Engine</h3>
+                    <p class="feature-text">Our backend connects directly to global market feeds. It scans structure, momentum, and volatility to deliver aggressive, high-probability price action sniper entries in seconds.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🛡️</div>
                     <h3 class="feature-title">Prop Firm Copilot</h3>
-                    <p class="feature-text">Passing an FTMO challenge requires absolute discipline. Activate Copilot mode to mathematically block yourself from taking any trade that violates your daily drawdown limit.</p>
+                    <p class="feature-text">Passing a funded challenge requires absolute discipline. Activate Copilot mode to mathematically block yourself from taking any trade that violates your daily drawdown limit.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📱</div>
@@ -175,7 +179,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
                     <h3 class="feature-title">Bank-Grade Vault</h3>
-                    <p class="feature-text">Your edge is your intellectual property. All trades are encrypted behind Supabase Row Level Security (RLS) cloud architecture. Nobody sees your data but you.</p>
+                    <p class="feature-text">Your edge is your intellectual property. All trades are encrypted behind our Row Level Security (RLS) cloud architecture. Nobody sees your data but you.</p>
                 </div>
             </div>
         </section>
@@ -187,11 +191,11 @@
                     "The Prop Firm Copilot physically stopped me from revenge trading last Tuesday. It literally saved my $100k funded account from being blown. The software pays for itself."
                     <div class="testimonial-author">
                         <div class="author-avatar">M</div>
-                        <div class="author-info"><div>Marcus T.</div><div>Funded Trader (FTMO)</div></div>
+                        <div class="author-info"><div>Marcus T.</div><div>Funded Trader</div></div>
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    "I used to spend 3 hours a day charting. Now I just ping the Deep Research tool for the GBPJPY bias, take the 1:3 R:R setup, and let the Telegram bot tell me when to collect."
+                    "I used to spend 3 hours a day charting. Now I just ping the DeepMatrix tool for the GBPJPY bias, take the 1:3 R:R setup, and let the Telegram bot tell me when to collect."
                     <div class="testimonial-author">
                         <div class="author-avatar">S</div>
                         <div class="author-info"><div>Sarah K.</div><div>Institutional Quant</div></div>
@@ -220,7 +224,7 @@
                         <li>Live Floating P/L Tracking</li>
                         <li>Basic Math & Risk Enforcement</li>
                         <li>CSV Data Export</li>
-                        <li style="opacity: 0.3; filter: grayscale(1);">No AI Deep Research</li>
+                        <li style="opacity: 0.3; filter: grayscale(1);">No AI DeepMatrix Research</li>
                     </ul>
                     <button class="btn-primary" style="width: 100%; background: transparent; border: 1px solid var(--accent); color: var(--text-main);" onclick="openModal('signup')">Create Free Vault</button>
                 </div>
@@ -230,7 +234,7 @@
                     <div class="price-amount">$49<span>/mo</span></div>
                     <ul class="price-features">
                         <li>Everything in Basic</li>
-                        <li>Unlimited GPT-5.5 Deep Research</li>
+                        <li>Unlimited DeepMatrix Analytics</li>
                         <li>AI Trade Autopsy Coach</li>
                         <li>Live Telegram Ping Alerts</li>
                         <li>Prop Firm Copilot Guardrails</li>
@@ -257,7 +261,7 @@
                     <input type="text" id="auth-name" class="form-control" placeholder="e.g. John Doe">
                 </div>
                 <div class="form-group">
-                    <label>Local Time Zone (For Accurate Journaling)</label>
+                    <label>Local Time Zone (For Journaling)</label>
                     <select id="auth-timezone" class="form-control">
                         <option value="UTC">UTC (Universal Coordinated Time)</option>
                         <option value="Asia/Kolkata" selected>IST (India Standard Time)</option>
@@ -275,17 +279,18 @@
                 <input type="email" id="auth-email" class="form-control" placeholder="trader@institution.com" required>
             </div>
 
-            <div class="form-group">
-                <label>Master Password</label>
-                <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+            <div class="form-group" id="password-group">
+                <label>Master Password <a id="forgot-link" onclick="setForgotMode()">Forgot?</a></label>
+                <input type="password" id="auth-password" class="form-control" placeholder="••••••••">
             </div>
 
-            <div class="error-message" id="error-box">Authentication Failed</div>
+            <div class="error-message" id="error-box"></div>
+            <div class="success-message" id="success-box"></div>
 
             <button class="btn-submit" id="auth-btn">Initialize Connection</button>
 
             <div class="toggle-text" id="toggle-container">
-                No account? <a onclick="toggleMode()">Request Terminal Access</a>
+                No account? <a onclick="setMode('signup')">Request Terminal Access</a>
             </div>
         </div>
     </div>
@@ -299,7 +304,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpic2ZybnRrb3VjaHR2Y3Z6ZHllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxOTk0MDQsImV4cCI6MjA5MDc3NTQwNH0.WOa3xgkp1IHMsSKugsheDhuGrQqGrmoEVLUbDptY2Qw';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let isLoginMode = true;
+        let currentMode = 'login'; // 'login', 'signup', or 'forgot'
         const modal = document.getElementById('auth-modal');
 
         async function checkActiveSession() {
@@ -310,35 +315,50 @@
 
         function openModal(mode) {
             modal.classList.add('active');
-            isLoginMode = (mode === 'login');
-            updateModalUI();
+            setMode(mode);
         }
 
         function closeModal() {
             modal.classList.remove('active');
             document.getElementById('error-box').style.display = 'none';
+            document.getElementById('success-box').style.display = 'none';
         }
 
-        function toggleMode() {
-            isLoginMode = !isLoginMode;
-            updateModalUI();
-        }
-
-        function updateModalUI() {
+        function setMode(mode) {
+            currentMode = mode;
             document.getElementById('error-box').style.display = 'none';
-            if (isLoginMode) {
+            document.getElementById('success-box').style.display = 'none';
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-password').value = '';
+
+            if (mode === 'login') {
                 document.getElementById('form-title').innerText = "Terminal Login";
                 document.getElementById('form-subtitle').innerText = "Enter your credentials to access the vault.";
                 document.getElementById('signup-fields').style.display = 'none';
+                document.getElementById('password-group').style.display = 'block';
+                document.getElementById('forgot-link').style.display = 'inline';
                 document.getElementById('auth-btn').innerText = "Initialize Connection";
-                document.getElementById('toggle-container').innerHTML = `No account? <a onclick="toggleMode()">Request Terminal Access</a>`;
-            } else {
+                document.getElementById('toggle-container').innerHTML = `No account? <a onclick="setMode('signup')">Request Terminal Access</a>`;
+            } else if (mode === 'signup') {
                 document.getElementById('form-title').innerText = "Create Account";
                 document.getElementById('form-subtitle').innerText = "Setup your institutional parameters.";
                 document.getElementById('signup-fields').style.display = 'block';
+                document.getElementById('password-group').style.display = 'block';
+                document.getElementById('forgot-link').style.display = 'none';
                 document.getElementById('auth-btn').innerText = "Create Vault";
-                document.getElementById('toggle-container').innerHTML = `Already have an account? <a onclick="toggleMode()">Log In</a>`;
+                document.getElementById('toggle-container').innerHTML = `Already have an account? <a onclick="setMode('login')">Log In</a>`;
+            } else if (mode === 'forgot') {
+                document.getElementById('form-title').innerText = "Reset Access";
+                document.getElementById('form-subtitle').innerText = "Enter your email to receive a secure recovery link.";
+                document.getElementById('signup-fields').style.display = 'none';
+                document.getElementById('password-group').style.display = 'none';
+                document.getElementById('auth-btn').innerText = "Send Recovery Link";
+                document.getElementById('toggle-container').innerHTML = `Remembered your password? <a onclick="setMode('login')">Log In</a>`;
             }
+        }
+
+        function setForgotMode() {
+            setMode('forgot');
         }
 
         document.getElementById('auth-btn').addEventListener('click', async () => {
@@ -348,24 +368,27 @@
             const tz = document.getElementById('auth-timezone').value;
             const btn = document.getElementById('auth-btn');
             const errorBox = document.getElementById('error-box');
+            const successBox = document.getElementById('success-box');
 
-            if (!email || !password || (!isLoginMode && !name)) {
+            if (!email || (currentMode !== 'forgot' && !password) || (currentMode === 'signup' && !name)) {
                 errorBox.innerText = "Please fill out all required fields.";
                 errorBox.style.display = 'block';
+                successBox.style.display = 'none';
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "Authenticating...";
+            btn.innerText = "Processing...";
             errorBox.style.display = 'none';
+            successBox.style.display = 'none';
 
             try {
-                if (isLoginMode) {
+                if (currentMode === 'login') {
                     const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
                     if (error) throw error;
                     window.location.href = 'dashboard.html';
-                } else {
-                    // Send name AND timezone to Supabase Database
+
+                } else if (currentMode === 'signup') {
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
@@ -373,18 +396,37 @@
                     });
                     if (error) throw error;
 
-                    alert("Vault created successfully! You can now log in.");
-                    toggleMode(); 
+                    // UPDATED SUCCESS MESSAGE FOR EMAIL CONFIRMATION
+                    successBox.innerText = "Vault created! Please check your email to verify your account before logging in.";
+                    successBox.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = "Create Vault";
+                    
+                    // Clear fields
+                    document.getElementById('auth-password').value = '';
+
+                } else if (currentMode === 'forgot') {
+                    const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                        redirectTo: 'https://aysociallab.github.io/aiforexmentor/dashboard.html',
+                    });
+                    if (error) throw error;
+                    
+                    successBox.innerText = "If an account exists, a secure recovery link has been sent to that email.";
+                    successBox.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = "Send Recovery Link";
                 }
             } catch (err) {
-                errorBox.innerText = err.message || "Authentication failed.";
+                errorBox.innerText = err.message || "Action failed. Please try again.";
                 errorBox.style.display = 'block';
                 btn.disabled = false;
-                btn.innerText = isLoginMode ? "Initialize Connection" : "Create Vault";
+                
+                if (currentMode === 'login') btn.innerText = "Initialize Connection";
+                else if (currentMode === 'signup') btn.innerText = "Create Vault";
+                else btn.innerText = "Send Recovery Link";
             }
         });
 
-        // Close modal if clicked outside the box
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
