@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+supabase
+requests
+openai
+yfinance
+pandas
+pandas-ta
