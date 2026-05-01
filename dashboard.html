@@ -680,7 +680,7 @@
         function initLivePricePolling() {
             setInterval(async () => {
                 try {
-                    const res = await fetch('https://ai-forex-backend-xyz.onrender.com/api/v2/live-prices');
+                    const res = await fetch('https://ai-forex-backend-dth0.onrender.com/api/v2/live-prices');
                     const prices = await res.json();
                     if (Object.keys(prices).length > 0) {
                         liveMarketPrices = prices;
@@ -952,7 +952,7 @@
             instruction.style.display = 'none';
 
             try {
-                const response = await fetch('https://ai-forex-backend-xyz.onrender.com/api/v2/analyze', {
+                const response = await fetch('https://ai-forex-backend-dth0.onrender.com/api/v2/analyze', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ asset: asset, timeframe: timeframe, min_rr: minRR }) 
                 });
@@ -1411,7 +1411,7 @@
             const trade = globalTradeData.find(t => t.id === id); if (!trade) return;
             alert(`⏳ Initializing Autopsy for ${trade.asset}...\nThe DeepMatrix engine is reviewing the outcome.`);
             try {
-                const response = await fetch('https://ai-forex-backend-xyz.onrender.com/api/v2/autopsy', { 
+                const response = await fetch('https://ai-forex-backend-dth0.onrender.com/api/v2/autopsy', { 
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ asset: trade.asset, setup_type: trade.setup_type, entry: trade.entry_price, status: trade.status, notes: trade.notes }) 
                 });
