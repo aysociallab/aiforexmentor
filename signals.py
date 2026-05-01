@@ -139,10 +139,20 @@ async def analyze_market(request: AnalyzeRequest):
         atr_value = 0.0020
 
     prompt = f"""
-    You are an elite Quant. Asset: {request.asset}. Bias: {request.timeframe}. Min R/R: 1:{request.min_rr}. 
+    You are an elite Institutional Quant. Target Asset: {request.asset}. Timeframe Bias: {request.timeframe}. Required Minimum Risk/Reward Ratio: 1:{request.min_rr}. 
+    
+    CRITICAL MARKET DATA:
     {price_context}
-    RULES: 1. Align with D1 Trend. 2. SL MUST be 0.5 to 1.0 * ATR ({atr_value}) away from entry. 3. Pure aggressive price action. No lagging indicator wait times. 4. Strict math: TP distance >= {request.min_rr}x SL distance.
-    Calculate strength_score (1-100) and risk_reward_ratio ("1:X").
+
+    INSTITUTIONAL RULES FOR HIGH-ACCURACY SETUPS:
+    1. TREND ALIGNMENT: Prioritize setups that align with the D1 Trend. Counter-trend is only allowed if there is massive intraday divergence or a clear liquidity sweep.
+    2. DYNAMIC STOP LOSS (WITH SPREAD BUFFER): Place the SL beyond recent structural swing highs/lows using a 1.2 to 1.5 * ATR ({atr_value}) buffer. CRITICAL: Never use a Stop Loss smaller than 15 pips. You must protect the entry from broker spread and normal market noise, even if the ATR is extremely low.
+    3. ENTRY TRIGGERS: Focus on pure price action—Order Blocks, Fair Value Gaps (FVG), and Liquidity Sweeps. Do not wait for lagging indicators to cross if price action confirms a reversal.
+    4. STRICT RISK MATH: The distance from Entry to Take Profit 1 MUST be mathematically >= {request.min_rr}x the Stop Loss distance. 
+    5. TAKE PROFIT SCALING: Space out TP1, TP2, and TP3 logically to secure early profit while letting runners ride structural highs/lows.
+
+    Calculate a 'strength_score' (1-100) based on confluence. Calculate the exact 'risk_reward_ratio' string (e.g. "1:3.5").
+    
     Respond ONLY in valid JSON:
     {{
         "market_buy": {{ "strength_score": 85, "risk_reward_ratio": "1:3.5", "entry": {live_price}, "stop_loss": 0.0, "take_profit_1": 0.0, "take_profit_2": 0.0, "take_profit_3": 0.0, "deep_analysis": "..." }},
