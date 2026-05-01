@@ -75,7 +75,7 @@
         .spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; margin-right: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .journal-split { display: grid; grid-template-columns: 2fr 3fr; gap: 2rem; margin-bottom: 1.5rem; }
+        .journal-split { display: grid; grid-template-columns: 2fr 3fr; gap: 2rem; }
         .form-panel-left { border-right: 1px solid var(--border); padding-right: 2rem; }
         
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
@@ -123,8 +123,8 @@
             .user-info { text-align: center; }
             .top-dashboard-wrapper { grid-template-columns: 1fr; }
             .user-stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .journal-split { grid-template-columns: 1fr; }
-            .form-panel-left { border-right: none; padding-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 2rem; margin-bottom: 0.5rem; }
+            .journal-split { grid-template-columns: 1fr; gap: 0;}
+            .form-panel-left { border-right: none; padding-right: 0; }
         }
         @media (max-width: 768px) {
             main { padding: 1rem; }
@@ -189,12 +189,12 @@
                 <div class="stat-card">
                     <div class="stat-label">Total TPs Hit</div>
                     <div class="stat-val positive" id="stat-wins">0</div>
-                    <div class="stat-sub">Successful targets hit</div>
+                    <div class="stat-sub">Winning Setups</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Total SLs Hit</div>
                     <div class="stat-val negative" id="stat-losses">0</div>
-                    <div class="stat-sub">Risk events triggered</div>
+                    <div class="stat-sub">Losing Setups</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Win Rate</div>
@@ -252,7 +252,7 @@
         </div>
 
         <div class="control-panel">
-            <div class="ai-header-wrapper"><h2 class="ai-title">AI Deep Research Protocols</h2></div>
+            <div class="ai-header-wrapper"><h2 class="ai-title">DeepMatrix Quant Research Protocols</h2></div>
             <div id="ai-controls-wrapper" style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
                 <div class="form-group" style="margin-bottom: 0; width: 100%;">
                     <label>Target Asset (11 Pairs Active)</label>
@@ -280,10 +280,10 @@
                 <button class="btn-analyze" id="analyze-btn">
                     <div class="spinner" id="analyze-spinner"></div>
                     <svg id="analyze-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                    <span id="analyze-text">Activate AI Protocols</span>
+                    <span id="analyze-text">Activate Matrix Scan</span>
                 </button>
             </div>
-            <div id="system-status" style="font-size: 0.875rem; margin-top: 1rem; color: var(--text-muted);">AI protocols ready. Waiting for user input...</div>
+            <div id="system-status" style="font-size: 0.875rem; margin-top: 1rem; color: var(--text-muted);">Quant engine ready. Waiting for user input...</div>
             
             <div class="confluence-container" id="confluence-box">
                 <div class="confluence-text" id="confluence-title" style="font-weight: 700; margin-bottom: 8px;">Overall Directional Bias: Calculating...</div>
@@ -348,16 +348,6 @@
                             <input type="number" step="0.01" class="form-control" id="modal-actual-pnl-tp1" placeholder="Auto">
                         </div>
                     </div>
-                    
-                    <div class="form-group" style="margin-top: 0.5rem;">
-                        <label>Trade Notes & Confluence</label>
-                        <textarea id="modal-notes" class="form-control" rows="2" placeholder="Why are you taking this setup?"></textarea>
-                    </div>
-
-                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
-                        <button class="btn-analyze" id="save-trade-btn" style="flex: 3; background-color: var(--success);">Log Entry & Monitor Trade (FREE)</button>
-                        <button class="btn-analyze" id="cancel-edit-btn" style="flex: 1; background-color: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); display: none;">Cancel</button>
-                    </div>
                 </div>
 
                 <div class="form-panel-v2">
@@ -417,6 +407,18 @@
                         </div>
                         <div id="equity-risk-alert" class="equity-alert"></div>
                     </div>
+                </div>
+            </div>
+            
+            <div class="form-panel-bottom" style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label>Trade Notes & Confluence</label>
+                    <textarea id="modal-notes" class="form-control" rows="3" placeholder="Why are you taking this setup? (System warnings will auto-append here upon save)."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                    <button class="btn-analyze" id="save-trade-btn" style="flex: 3; background-color: var(--success);">Log Entry & Monitor Trade</button>
+                    <button class="btn-analyze" id="cancel-edit-btn" style="flex: 1; background-color: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); display: none;">Cancel</button>
                 </div>
             </div>
         </div>
@@ -678,7 +680,7 @@
         function initLivePricePolling() {
             setInterval(async () => {
                 try {
-                    const res = await fetch('https://ai-forex-backend-dth0.onrender.com/api/v2/live-prices');
+                    const res = await fetch('https://ai-forex-backend-xyz.onrender.com/api/v2/live-prices');
                     const prices = await res.json();
                     if (Object.keys(prices).length > 0) {
                         liveMarketPrices = prices;
@@ -878,7 +880,6 @@
                 const riskPips = isBuy ? (trade.entry_price - trade.stop_loss) : (trade.stop_loss - trade.entry_price);
                 const rewardPips = isBuy ? (trade.take_profit_1 - trade.entry_price) : (trade.entry_price - trade.take_profit_1);
                 
-                // Calculate total Realized P/L for this specific trade
                 let tradeNetPnL = 0;
                 let tradeIsClosed = false;
 
@@ -898,16 +899,10 @@
                     else if (trade.status_tp3 === 'sl_hit') tradeNetPnL += calculateMT5PnL(trade.asset, trade.entry_price, trade.stop_loss, trade.lot_tp3, isBuy);
                 }
 
-                // Check if trade is fully resolved to log stats
-                if (trade.status === 'closed_profit' || trade.status === 'closed_loss' || 
-                   (trade.actual_pnl_tp1 !== null && trade.actual_pnl_tp1 !== undefined)) {
-                    
+                if (trade.status === 'closed_profit' || trade.status === 'closed_loss' || (trade.actual_pnl_tp1 !== null && trade.actual_pnl_tp1 !== undefined)) {
                     totalProfit += tradeNetPnL;
-                    
-                    // INSTITUTIONAL SETUP SCORING: 1 Idea = 1 Win or 1 Loss
                     if (tradeNetPnL > 0) {
                         wins++;
-                        // Only add to average R:R if it was a winning setup to see average reward multiple
                         if (riskPips > 0 && rewardPips > 0) { totalRR += (rewardPips / riskPips); rrCount++; }
                     } else if (tradeNetPnL < 0) {
                         losses++;
@@ -925,7 +920,6 @@
             document.getElementById('stat-balance').innerText = `$${currentBalance.toFixed(2)}`;
             document.getElementById('stat-equity').innerText = `$${currentBalance.toFixed(2)}`; 
             
-            // UI text update to reflect "Setups"
             document.getElementById('stat-wins').innerText = wins;
             document.getElementById('stat-wins').nextElementSibling.innerText = "Winning Setups";
             
@@ -958,7 +952,7 @@
             instruction.style.display = 'none';
 
             try {
-                const response = await fetch('https://ai-forex-backend-dth0.onrender.com/api/v2/analyze', {
+                const response = await fetch('https://ai-forex-backend-xyz.onrender.com/api/v2/analyze', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ asset: asset, timeframe: timeframe, min_rr: minRR }) 
                 });
@@ -1015,7 +1009,6 @@
                         </div>
                     `;
 
-                    // HIGHLIGHT UPGRADE APPLIED HERE
                     if (setupData.risk_reward_ratio) {
                         htmlContent += `<div style="margin-bottom: 12px; display:inline-block; background: var(--warning); color: #0f172a; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 800; box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);">🎯 Target R:R - ${setupData.risk_reward_ratio}</div><br>`;
                     }
@@ -1069,12 +1062,12 @@
                 instruction.style.display = 'block';
 
             } catch (error) { 
-                statusText.style.color = 'var(--danger)'; statusText.innerText = `⚠️ AI Formatting Error: ${error.message}`; console.error(error);
+                statusText.style.color = 'var(--danger)'; statusText.innerText = `⚠️ DeepMatrix Formatting Error: ${error.message}`; console.error(error);
             } finally { 
                 btn.disabled = false; 
                 spinner.style.display = 'none';
                 icon.style.display = 'block';
-                btnText.innerText = `Activate AI Protocols`; 
+                btnText.innerText = `Activate Matrix Scan`; 
                 grid.classList.remove('loading');
             }
         });
@@ -1092,7 +1085,7 @@
             document.getElementById('modal-sl').value = formatPrice(data.stop_loss);
             document.getElementById('modal-tp1').value = formatPrice(data.take_profit_1); 
             
-            document.getElementById('modal-notes').value = data.deep_analysis || "AI Setups Used.";
+            document.getElementById('modal-notes').value = data.deep_analysis || "DeepMatrix setup utilized.";
 
             document.querySelectorAll('.sync-ui').forEach(ui => ui.style.display = 'none');
 
@@ -1214,7 +1207,7 @@
         document.getElementById('cancel-edit-btn').addEventListener('click', () => {
             currentEditId = null;
             const btn = document.getElementById('save-trade-btn');
-            btn.innerHTML = `Log Entry & Monitor Trade (FREE)`;
+            btn.innerHTML = `Log Entry & Monitor Trade`;
             btn.style.backgroundColor = 'var(--success)';
             btn.disabled = false;
             document.getElementById('cancel-edit-btn').style.display = 'none';
@@ -1234,6 +1227,14 @@
             const lot1 = parseFloat(document.getElementById('modal-lot1').value) || 0;
             if (lot1 <= 0) return alert("⚠️ Vault Entry Fail: TP 1 Lot Size must be greater than 0.");
             
+            // --- NEW: INJECT RISK WARNING INTO NOTES ---
+            let tradeNotes = document.getElementById('modal-notes').value;
+            const alertBox = document.getElementById('equity-risk-alert');
+            if (alertBox && alertBox.style.display === 'block' && alertBox.innerText) {
+                const cleanWarning = alertBox.innerText.replace('🛡️', '').replace('🚨', '').replace('⚠️', '').trim();
+                tradeNotes += `\n\n[SYSTEM WARNING IGNORED]: ${cleanWarning}`;
+            }
+
             btn.disabled = true; 
             btn.innerText = 'Syncing...';
             
@@ -1243,7 +1244,6 @@
 
                 const setupType = document.getElementById('modal-setup_type').value;
                 const isMarket = setupType.includes('market');
-                const tradeNotes = document.getElementById('modal-notes').value;
                 
                 const getOverride = (id) => document.getElementById(id).value === "" ? null : parseFloat(document.getElementById(id).value);
                 const actual_pnl_tp1 = getOverride('modal-actual-pnl-tp1');
@@ -1304,16 +1304,17 @@
                 document.querySelectorAll('.sync-ui').forEach(ui => ui.style.display = 'none');
                 
                 setTimeout(() => { 
-                    btn.innerHTML = `Log Entry & Monitor Trade (FREE)`; 
+                    btn.innerHTML = `Log Entry & Monitor Trade`; 
                     btn.style.backgroundColor = 'var(--success)'; 
                     btn.disabled = false; 
                     currentEditId = null; 
                     document.getElementById('cancel-edit-btn').style.display = 'none';
+                    document.getElementById('modal-notes').value = '';
                 }, 1500);
 
             } catch (err) { 
                 alert("Fail: " + err.message); 
-                btn.innerText = currentEditId ? 'Update Trade Entry' : 'Log Entry & Monitor Trade (FREE)';
+                btn.innerText = currentEditId ? 'Update Trade Entry' : 'Log Entry & Monitor Trade';
                 btn.disabled = false; 
             }
         });
@@ -1408,9 +1409,9 @@
 
         window.requestAutopsy = async function(id) {
             const trade = globalTradeData.find(t => t.id === id); if (!trade) return;
-            alert(`⏳ Initializing Autopsy for ${trade.asset}...\nThe AI is reviewing the outcome.`);
+            alert(`⏳ Initializing Autopsy for ${trade.asset}...\nThe DeepMatrix engine is reviewing the outcome.`);
             try {
-                const response = await fetch('https://ai-forex-backend-dth0.onrender.com/api/v2/autopsy', { 
+                const response = await fetch('https://ai-forex-backend-xyz.onrender.com/api/v2/autopsy', { 
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ asset: trade.asset, setup_type: trade.setup_type, entry: trade.entry_price, status: trade.status, notes: trade.notes }) 
                 });
