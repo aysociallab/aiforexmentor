@@ -129,6 +129,13 @@ def get_market_context(asset: str, timeframe: str):
 @router.post("/analyze")
 async def analyze_market(request: AnalyzeRequest):
     context = get_market_context(request.asset, request.timeframe)
+    
+    # 1. DYNAMIC PIP FLOOR LOGIC
+    if "intraday" in request.timeframe.lower():
+        min_pips = 15
+    else:
+        min_pips = 50
+
     if context:
         price_context = f"Live Price: {context['price']:.5f}. D1 Trend: {context['macro_trend_d1']}. 20 EMA: {context['ema_20']}. 50 EMA: {context['ema_50']}. 200 EMA: {context['ema_200']}. RSI: {context['rsi_14']}. ATR: {context['atr_14']}"
         live_price = context['price']
@@ -138,6 +145,7 @@ async def analyze_market(request: AnalyzeRequest):
         live_price = 1.0
         atr_value = 0.0020
 
+    # 2. THE UPGRADED PROMPT WITH {min_pips}
     prompt = f"""
     You are an elite Institutional Quant. Target Asset: {request.asset}. Timeframe Bias: {request.timeframe}. Required Minimum Risk/Reward Ratio: 1:{request.min_rr}. 
     
@@ -146,7 +154,7 @@ async def analyze_market(request: AnalyzeRequest):
 
     INSTITUTIONAL RULES FOR HIGH-ACCURACY SETUPS:
     1. TREND ALIGNMENT: Prioritize setups that align with the D1 Trend. Counter-trend is only allowed if there is massive intraday divergence or a clear liquidity sweep.
-    2. DYNAMIC STOP LOSS (WITH SPREAD BUFFER): Place the SL beyond recent structural swing highs/lows using a 1.2 to 1.5 * ATR ({atr_value}) buffer. CRITICAL: Never use a Stop Loss smaller than 15 pips. You must protect the entry from broker spread and normal market noise, even if the ATR is extremely low.
+    2. DYNAMIC STOP LOSS (WITH SPREAD BUFFER): Place the SL beyond recent structural swing highs/lows using a 1.2 to 1.5 * ATR ({atr_value}) buffer. CRITICAL: Never use a Stop Loss smaller than {min_pips} pips. You must protect the entry from broker spread and normal market noise on this specific timeframe.
     3. ENTRY TRIGGERS: Focus on pure price action—Order Blocks, Fair Value Gaps (FVG), and Liquidity Sweeps. Do not wait for lagging indicators to cross if price action confirms a reversal.
     4. STRICT RISK MATH: The distance from Entry to Take Profit 1 MUST be mathematically >= {request.min_rr}x the Stop Loss distance. 
     5. TAKE PROFIT SCALING: Space out TP1, TP2, and TP3 logically to secure early profit while letting runners ride structural highs/lows.
